@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>MyLibrary</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='styles.css')}}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playwrite+AT:ital,wght@0,100..400;1,100..400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{url_for('static',filename='styles.css')}}">
+
+</head>
+
+<body class="bg-yellow-950">
+
+<!-- Landing Div -->
+    <div id="welcomediv" class="flex flex-col gap-[10px] items-center fixed top-[30%] left-[35%]">
+        <div >
+            <img src="{{url_for('static',filename='Book.png')}}">
+            <p class="-translate-y-52 translate-x-24	 z-50 font-playwrite text-2xl ">Welcome to the bookstore</p>
+        </div>
+        <button id="showhome" class="rounded-lg p-5 bg-black text-white hover:opacity-70">CheckOut</button>
+    </div>
+
+<!-- Main Homepage Div -->
+    <div id="homediv" class="fixed top-[30%] left-[35%] opacity-0 ">
+       <div class="bg-white rounded-lg flex flex-row gap-[20px] p-[20px]">
+           <div class="flex flex-col gap-[100px] ">
+
+               <div id='loginbut' class="content text-cyan-800 font-bold hover:text-black sm:pt-[40px]">To login <button class="rounded-lg bg-red-500 text-white font-bold p-[10px]">Login</button></div>
+
+               <div class=" content text-cyan-800 font-bold hover:cursor-pointer hover:text-black  sm:gap-[20px]"><img src="{{url_for('static',filename='books.png')}}" class='w-[40%] ' alt="pileofbooks">Random Book Suggestion</div>
+           </div>
+           <div class="flex flex-col gap-[240px] ">
+               <div id="donatebut" class=" content text-cyan-800 font-bold hover:text-black sm:pt-[40px]">To Contribute <button class="rounded-lg bg-green-500 text-white font-bold  p-[10px]">Donate Now</button></div>
+               <div><a href="{{url_for('ratingdisp')}} " class=" content text-cyan-800 font-bold hover:text-black">View Ratings of Random Books</a></div>
+           </div>
+       </div>
+    </div>
+
+<!--Login Form -->
+    <form id="loginform" class="bg-white rounded-lg p-[20px] flex flex-col gap-[10px] items-center w-fit opacity-0 fixed top-[30%] left-[35%]" method="post" action="{{url_for('login')}}">
+        <div class="flex flex-row gap-[5px]">
+            <label for="username">Enter your username:</label>
+            <input type="text" name="username" class="bg-slate-400 rounded-lg p-[5px] font-bold text-white font-mono">
+        </div>
+        <div class="flex flex-row gap-[5px]">
+            <label for="password">Enter your password:</label>
+            <input type="password" name="password" class="bg-slate-400 rounded-lg p-[5px] font-bold text-white font-mono">
+        </div>
+        <input type="submit" class="bg-green-500 font-bold text-white rounded-lg p-[10px] hover:opacity-50">
+        <p>Not a member of our community? <button id='tosignup' class="rounded-lg p-[5px] bg-sky-500 font-bold text-white">Sign up!</button></p>
+    </form>
+
+
+<!-- SignUp Form-->
+<form id="signupform" class="bg-white rounded-lg p-[20px] flex flex-col gap-[10px] items-center w-fit opacity-0 fixed top-[30%] left-[35%]" method="post" action="{{url_for('signup')}}">
+        <div class="flex flex-row gap-[5px]">
+            <label for="name">Enter your name:</label>
+            <input type="text" name="name" class="bg-slate-400 rounded-lg p-[5px] font-bold text-white font-mono">
+        </div>
+        <div class="flex flex-row gap-[5px]">
+            <label for="username">Enter your username:</label>
+            <input type="text" name="username" class="bg-slate-400 rounded-lg p-[5px] font-bold text-white font-mono">
+        </div>
+        <div class="flex flex-row gap-[5px]">
+            <label for="password">Enter your password:</label>
+            <input type="password" name="password" class="bg-slate-400 rounded-lg p-[5px] font-bold text-white font-mono">
+        </div>
+        <input type="submit" class="bg-green-500 font-bold text-white rounded-lg p-[10px] hover:opacity-50">
+        <p>Already a member of our community? <button class="rounded-lg p-[5px] bg-sky-500 font-bold text-white" id="backtologin">Login!</button></p>
+</form>
+
+
+</body>
+<script src="{{url_for('static',filename='index.js')}}"></script>
+ <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                          playwrite: ['"Playwrite AT"', 'cursive']
+                    },
+                },
+            }
+        }
+    </script>
+</html>

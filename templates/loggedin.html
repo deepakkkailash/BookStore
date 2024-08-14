@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>MyLibrary</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='styles.css')}}">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+
+<body  class="bg-yellow-950">
+    <div class=" rounded-lg text-white font-bold p-[14px] w-fit    fixed top-[2%] left-[5%]">
+        Hello {{name}}...Happy to see you again. Here are some classic Book Recommendations for you!
+    </div>
+    <div class="flex flex-row gap-[10px] fixed top-[10%] left-[30%]">
+        {% for i in covers %}
+            <img src="{{url_for('static', filename=i)}}" alt="bookcover">
+        {% endfor %}
+    </div>
+    <div class="flex flex-row gap-[200px] items-center fixed top-[40%] left-[10%] w-[1200px]">
+        {% set options = ['Rate Books', 'Be a Author of your own Story'] %}
+        {% for i in options %}
+            <div id="{{i|replace(' ','')}}" class="optionsforuser z-50 bg-slate-400 text-white font-bold text-2xl rounded-lg flex justify-center items-center  w-[40%] h-[400px]  hover:opacity-50">{{i}}</div>
+        {% endfor %}
+    </div>
+    <form id="ratingform" class="p-[12px] z-0 rounded-lg font-bold bg-red-400 text-black flex flex-col gap-[10px] fixed top-[40%] left-[40%] items-center opacity-0">
+        <div class="flex flex-row gap-[10px]">
+            <label for="bookname">Name of Book:</label>
+            <input type="text" name="bookname" class="rounded-lg p-[5px] bg-white font-mono text-black">
+        </div>
+
+        <div class="flex flex-row gap-[3px] w-[100px]">
+            {% for i in range(5) %}
+                <img src="{{url_for('static',filename='star.png')}}" class="stars w-[20%]" id="star{{i+1}}">
+            {%endfor %}
+        </div>
+        <input type="submit"  id='submitbuttonforratings' class="rounded-lg bg-green-700 text-white font-bold font-mono p-[4px] ">
+    </form>
+    <div id="bookuploadform" class="p-[10px] bg-white flex flex-row gap-10px items-center opacity-0 z-0 fixed top-[40%] left-[30%] rounded-lg">
+        <img src="{{url_for('static',filename='stanlee.png')}}" class="w-[50%] mt-[10px]"  >
+
+        <div id="ForTheUploadQuestion" class="flex flex-col gap-[10px]">
+
+        </div>
+
+    </div>
+<script>
+    window.shareddata = {{name|tojson}}
+    console.log('hi')
+    let options = document.getElementsByClassName('optionsforuser');
+
+    for(const i of options){
+        i.addEventListener('click',()=>{
+            if(i.id=='RateBooks'){
+                document.getElementById('ratingform').classList.add('opacity-100')
+                 document.getElementById('ratingform').classList.add('z-50')
+                 document.getElementById('ratingform').classList.remove('z-0')
+                let children = document.body.children;
+               for(let i of children){
+                    if(i.id=='ratingform'){
+                        continue
+                    }
+                    else{
+                        i.style.filter = "blur(8px)";
+                    }
+               }
+            }
+        });
+    }
+
+    let unfilled = document.getElementsByClassName('stars');
+
+    for(const i of unfilled){
+
+        i.addEventListener('click',()=>{
+           targetindex = Number(i.id.replace('star',''));
+           console.log(targetindex);
+           for(let i=1;i<=targetindex;i++){
+                targetnode = document.getElementById(`star${i}`);
+                targetnode.setAttribute('src','{{url_for('static', filename='starfilled.png')}}');
+
+           }
+           for(let i=targetindex+1;i<=5;i++){
+
+                targetnode = document.getElementById(`star${i}`);
+                targetnode.setAttribute('src','{{url_for('static', filename='star.png')}}')
+           }
+
+        });
+    }
+    async function submitstuff(route, formdata){
+        let response = await fetch(route, {
+               'method': 'POST',
+               'headers': {
+                'Content-Type': 'application/json'
+               },
+               'body': JSON.stringify(formdata)
+
+        });
+
+        let data = await response.json();
+
+        if(data['statusCode']==200){
+            window.alert('Successfully Uploaded your rating')
+            document.getElementById('ratingform').classList.add('opacity-0')
+            document.getElementById('ratingform').classList.remove('opacity-100')
+            document.getElementById('ratingform').classList.remove('z-50')
+            document.getElementById('ratingform').classList.add('z-0')
+            let children = document.body.children;
+            for(const i of children){
+                i.style.removeProperty('filter')
+            }
+        }
+        else{
+            window.alert('some error! Please try again');
+        }
+
+    }
+    document.getElementById('submitbuttonforratings').addEventListener('click',(event)=>{
+          event.preventDefault();
+           let stars = document.getElementsByClassName('stars');
+           rating = 0
+           for(const i of stars){
+                if(i.src.includes('starfilled')){
+                    rating+=1;
+                }
+           }
+           let formdata = new FormData(document.getElementById('ratingform'))
+           jsonObj = {}
+           for(const i of formdata){
+                jsonObj[i[0]]= i[1];
+           }
+            jsonObj['rating'] = rating;
+
+            submitstuff('/addrating',jsonObj);
+
+    });
+</script>
+<script src="{{url_for('static',filename='bookupload.js')}}"></script>
+</body>
+
+</html>
